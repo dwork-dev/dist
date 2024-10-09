@@ -58,7 +58,7 @@
 
 ## 3. Framework css
 
-[Tham khảo](https://github.com/vuits24/tfldwcss/blob/main/tfl/frameworkcss.md)
+[Tham khảo](https://github.com/dwork-dev/fwui/blob/main/dist/frameworkcss.md)
 
 
 ## 4. Các component 
