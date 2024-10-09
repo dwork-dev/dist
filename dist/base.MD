@@ -62,7 +62,7 @@
 
 
 ## 4. Các component 
-[Tham khảo](https://github.com/vuits24/tfldwcss/blob/main/tfl/component.md)
+[Tham khảo](https://github.com/dwork-dev/component/blob/main/README.md)
 
 
   .
