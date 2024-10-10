@@ -11,5 +11,6 @@
   "text.js",
   "time.js",
   "tree.js",
-  "treegrid"
+  "treegrid.js",
+  "http.js"
 ], "linkCsss":[]}
