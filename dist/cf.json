@@ -1,4 +1,18 @@
 {"linkScripts":[
   "icons.js",
-  "el.js"
+  "el.js",
+  "icons.js",
+  "el.js",
+  "button.js",
+  "combo.js",
+  "combobox.js",
+  "date.js",
+  "datetime.js",
+  "input.js",
+  "link.js",
+  "svg.js",
+  "text.js",
+  "time.js",
+  "tree.js",
+  "treegrid.js"
 ], "linkCsss":[]}
