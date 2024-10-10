@@ -4,7 +4,7 @@
 ```javascript
 {
     "data": any|null,
-    "status_code": number| Mặc định 500,
+    "code": number| Mặc định 500,
     "message": string|null,
 }
 ```
@@ -13,7 +13,7 @@ Giải thích mã code: Hãy quan tới mã code, hạn chế theo tham số res
 Chú ý:  Mã lỗi **400** có thể bao gồm các mã lỗi còn lại nhưng phải có mô tả nội dung.
 
 | STT | mã code | Mô tả |
-|---|---|---|---|
+|---|---|---|
 | 1 | 200 | Thành công |
 | 2 | 201 | Kiểm tra tham số yêu cầu: Bao gồm cấu trúc tham số, tham số giá trị không đúng với quy định,... |
 | 3 | 203 | Xác thực: Mã cookies không hợp lệ, không đúng cấu trúc, tự gen ra token,... |
