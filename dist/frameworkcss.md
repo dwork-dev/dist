@@ -1,13 +1,13 @@
 
 # Cấu trúc class theo framework
 ```text
-[<MQ>:][layer:]<Thuộc tính>[selector]
+[<MQ>:][layer]<Thuộc tính>[selector]
 ```
 - & Liên kết thuộc tính với nhau
 - ; Thay cho dấu cách của các giá trị, và selector
 
 ## 1. Diễn giải
--  **[ < MQ > : ]: xs, sm, md, lg, xl, 2xl**
+-  **MQ:  xs, sm, md, lg, xl, 2xl**
 	  + xs: max-width: 575px
 	  + sm: min-width: 576px
 	  + md: min-width: 768px
