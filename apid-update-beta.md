@@ -4,8 +4,8 @@
 ```javascript
 {
     "data": any|null,
-    "code": number| Mặc định 500,
-    "message": string|null,
+    "status_code": number| Mặc định 500,
+    "error": string|null,
 }
 ```
 Giải thích mã code: Hãy quan tới mã code, hạn chế theo tham số result, result trong tương lai sẽ bị hủy bỏ. 
