@@ -77,12 +77,10 @@ Dưới đây là danh sách các mã lỗi HTTP Status Code phổ biến đư�
 - **508 Loop Detected**: Máy chủ phát hiện một vòng lặp vô hạn trong khi xử lý yêu cầu.
 - **510 Not Extended**: Phần mở rộng yêu cầu để máy chủ hoàn thành yêu cầu không được cung cấp.
 - **511 Network Authentication Required**: Khách hàng phải xác thực để truy cập tài nguyên mạng.
-### 6xx: Custom Error (Lỗi tuỳ chỉnh của hệ thống)
-- **6000 Khóa thiết bị (Device Locked)**: Thiết bị đang bị khóa và không thể thực hiện hành động nào cho đến khi được mở khóa.
-- **6001 Khóa IP Public (Public IP Blocked)**: Địa chỉ IP của người dùng đã bị chặn do các lý do bảo mật hoặc vi phạm chính sách.
-- **6002 Tài khoản bị khóa (Account Locked)**: Tài khoản người dùng bị khóa do vi phạm bảo mật hoặc chính sách sử dụng.
-- **6003 Token không đúng cấu trúc (Malformed Token)**: Token xác thực không đúng cấu trúc hoặc không hợp lệ.
-- **6004 Hết hạn Token (Token Expired)**: Token xác thực của người dùng đã hết hạn, cần phải thực hiện đăng nhập lại.
-- **6005 Không có quyền truy cập (No Access Rights)**: Người dùng không có quyền truy cập vào tài nguyên hoặc chức năng yêu cầu.
-- **6006 Dữ liệu không đúng cấu trúc (Invalid Data Structure)**: Dữ liệu gửi đến không đúng định dạng hoặc cấu trúc, không thể xử lý.
-- **6007 Không có kết nối Internet (No Internet Connection)**:Hệ thống phát hiện rằng không có kết nối internet hoặc không thể kết nối đến máy
+### Tổng hợp các mã thường dùng
+- **423 Locked**: Khóa thiết bị.
+- **403 Forbidden**: Khóa IP Public, Tài khoản bị khóa, Không có quyền truy cập.
+- **400 Bad Request**: Token không đúng cấu trúc.
+- **401 Unauthorized**: Hết hạn token.
+- **422 Unprocessable Entity**: Dữ liệu không đúng cấu trúc.
+- **503 Service Unavailable**: Không có kết nối internet.
