@@ -1,4 +1,5 @@
 {"linkScripts":[
+  "el.js",
   "button.js",
   "combo.js",
   "combobox.js",
