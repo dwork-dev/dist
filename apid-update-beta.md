@@ -85,3 +85,4 @@ Dưới đây là danh sách các mã lỗi HTTP Status Code phổ biến đư�
 - **6004 Hết hạn Token (Token Expired)**: Token xác thực của người dùng đã hết hạn, cần phải thực hiện đăng nhập lại.
 - **6005 Không có quyền truy cập (No Access Rights)**: Người dùng không có quyền truy cập vào tài nguyên hoặc chức năng yêu cầu.
 - **6006 Dữ liệu không đúng cấu trúc (Invalid Data Structure)**: Dữ liệu gửi đến không đúng định dạng hoặc cấu trúc, không thể xử lý.
+- **6007 Không có kết nối Internet (No Internet Connection)**:Hệ thống phát hiện rằng không có kết nối internet hoặc không thể kết nối đến máy
