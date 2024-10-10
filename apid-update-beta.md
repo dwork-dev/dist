@@ -83,4 +83,4 @@ Dưới đây là danh sách các mã lỗi HTTP Status Code phổ biến đư�
 - **400 Bad Request**: Token không đúng cấu trúc.
 - **401 Unauthorized**: Hết hạn token.
 - **422 Unprocessable Entity**: Dữ liệu không đúng cấu trúc.
-- **503 Service Unavailable**: Không có kết nối internet.
+- **503 Service Unavailable**: Máy chủ tạm thời không thể xử lý yêu cầu, thường là do các lý do như không có kết nối internet hoặc mất kết nối mạng LAN.
