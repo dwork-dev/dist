@@ -5,7 +5,7 @@
 {
     "data": any|null,
     "status_code": number,
-    "error": string|null,
+    "error": {message: String, details:Object|null},
 }
 ```
 Giải thích mã code: Hãy quan tới mã code, hạn chế theo tham số result, result trong tương lai sẽ bị hủy bỏ. 
