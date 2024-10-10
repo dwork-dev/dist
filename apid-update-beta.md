@@ -4,7 +4,7 @@
 ```javascript
 {
     "data": any|null,
-    "status_code": number| Mặc định 500,
+    "status_code": number,
     "error": string|null,
 }
 ```
