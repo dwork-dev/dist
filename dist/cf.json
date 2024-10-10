@@ -1,1 +1,14 @@
-{"linkScripts":["el.js"], "linkCsss":[]}
+{"linkScripts":[
+  "button.js",
+  "combo.js",
+  "combobox.js",
+  "date.js",
+  "datetime.js",
+  "input.js",
+  "link.js",
+  "svg.js",
+  "text.js",
+  "time.js",
+  "tree.js",
+  "treegrid"
+], "linkCsss":[]}
