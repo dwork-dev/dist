@@ -3,7 +3,7 @@
 **1. Hàm kết quả định dạng chung**
 ```TypeScript
 {
-    "result": bool, <dự kiến Bỏ>
+    "result": bool, (***dự kiến Bỏ***)
     "data": any,
     "code": number,
     "message": string,
