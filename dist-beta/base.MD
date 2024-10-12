@@ -2,7 +2,7 @@
 ## 1. Cài đặt
 
 ```html
- <script src="https://fwui.pages.dev/dist/tfl.min.js"></script>
+ <script src="https://fwui.pages.dev/dist-beta/tfl.min.js"></script>
 
 
 
