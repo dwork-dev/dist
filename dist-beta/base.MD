@@ -51,10 +51,7 @@
   + $htmlToTjs: Hàm convert txt html sang dạng tjs
   + $domToTjs: Hàm chuyển Dom sang dạng tjs
   + $defineElement: Hàm định nghĩa thẻ tuỳ chỉnh
-  + $ElementSync: Hàm  thẻ load dữ liệu bất đồng bộ
-  + $topIndex: Hàm lấy giá trị index, giá trị tăng dần
-  + $dialog: Hàm để tạo cửa sổ, popup,..
-
+ 
 
 ## 3. Framework css
 
