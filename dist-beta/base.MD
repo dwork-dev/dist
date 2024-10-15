@@ -55,7 +55,7 @@
 
 ## 3. Framework css
 
-[Tham khảo](https://github.com/dwork-dev/fwui/blob/main/dist/frameworkcss.md)
+[Tham khảo](https://github.com/dwork-dev/fwkui/blob/main/dist-beta/css-beta.md)
 
 
 ## 4. Các component 
