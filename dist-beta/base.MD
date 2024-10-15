@@ -1,4 +1,11 @@
 # Hướng dẫn sử dụng framework
+
+## 0. Nâng cấp    
+
+- Nâng cấp css: Thêm @ vào bộ luật css
+- Phiên bản tiếp theo: Thêm ? vào bộ luật css
+
+
 ## 1. Cài đặt
 
 ```html
