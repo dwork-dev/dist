@@ -1,8 +1,15 @@
 
 # Cấu trúc class theo framework
+**Cấu trúc cũ:**     
 ```text
+[<MQ>:][layer]<Thuộc tính>[<selector>]
+```
+**Cấu trúc mới:**     
+```
 [<MQ>:][layer]<Thuộc tính>[@<selector>]
 ```
+**Phần thay đổi:** *Thêm ký tự @ phía trước phân biệt Pseudo*
+
 - & Liên kết thuộc tính với nhau
 - ; Thay cho dấu cách của các giá trị
 - <span> <span style='color:#ff0000'>**@**</span> </span> phân tách thuộc tính và selector pseudo
@@ -2163,7 +2170,7 @@
 	}
 ```
 
-### - xs:1cRed:hover;>div
+### - xs:1cRed@:hover;>div
 
 + ***Phân tích**
 	MQ: xs =>  screen and (max-width: 575px)    
@@ -2179,7 +2186,7 @@
 		}
 	}
 ```
-### - xs:1cRed&bgGreen:hover;>div   
+### - xs:1cRed&bgGreen@:hover;>div   
 
 + **Phân tích**
 	MQ: xs =>  screen and (max-width: 575px)     
