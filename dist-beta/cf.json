@@ -1,5 +1,6 @@
 {"linkScripts":[
   "icons.js",
   "el.js",
-  "components.js"
+  "components.js",
+  "sdk.js"
 ], "linkCsss":[]}
