@@ -75,7 +75,7 @@
       req.setRequestHeader("Content-Type", "application/json");
       _token=_token||dk.cookie("token");
       if(_token){
-        req.setRequestHeader("token", token);
+        req.setRequestHeader("token", _token);
       }
       if(params.app){
         req.setRequestHeader("id_app", params.app);
