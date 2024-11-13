@@ -71,7 +71,13 @@
     return new Promise(resolve=>{
       req.addEventListener("load", function(){
         var rs=JSON.parse(this.response)
-        typeof callback=="function"&&callback(rs)
+        if(url.includes("os/login") && rs.data && rs.status_code==200){
+          _token=rs.data.token;
+          _user=rs.data.user;
+          dk.cookie("user",_user);
+          dk.cookie("token",_token);
+        }
+        typeof callback=="function"&&callback(rs);
         resolve(rs);
       });
       req.open("POST", url,sync);
@@ -89,14 +95,7 @@
   dk.login=(username,password,cb)=>{
     return new Promise(rsl=>{
       dk.post("https://dw.beta.fwkui.com/os/login",{data:{username,password}},rs=>{
-        console.log("login",rs)
-        if(rs.data && rs.status_code==200){
-          _token=rs.data.token;
-          _user=rs.data.user;
-          dk.cookie("user",_user);
-          dk.cookie("token",_token);
-          typeof cb=="function"&&cb(rs);
-        }
+        typeof cb=="function"&&cb(rs);
         rsl(rs);
       })
     })
