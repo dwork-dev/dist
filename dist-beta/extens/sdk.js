@@ -76,6 +76,11 @@
           _user=rs.data.user;
           dk.cookie("user",_user);
           dk.cookie("token",_token);
+        }else if(url.includes("os/out")&&!url.includes("os/out_all")){
+          dk.cookie("user"," ",0);
+          dk.cookie("token"," ",0);
+          _token="";
+          _user={};
         }
         typeof callback=="function"&&callback(rs);
         resolve(rs);
