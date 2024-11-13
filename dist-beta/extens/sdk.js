@@ -89,6 +89,7 @@
   dk.login=(username,password,cb)=>{
     return new Promise(rsl=>{
       dk.post("https://dw.beta.fwkui.com/os/login",{data:{username,password}},rs=>{
+        console.log("login",rs)
         if(rs.data && rs.status_code==200){
           _token=rs.data.token;
           _user=rs.data.user;
