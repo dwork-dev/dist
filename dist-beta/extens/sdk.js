@@ -55,6 +55,9 @@
       localStorage.setItem(ckey, JSON.stringify(data));
     }
   }
+  dk.token=()=>{
+    return _token;
+  }
   dk.post=async (url,params,callback,callbackerror,sync)=>{
     params=params||{};
     if(typeof params=="string"){
@@ -73,7 +76,7 @@
       });
       req.open("POST", url,sync);
       req.setRequestHeader("Content-Type", "application/json");
-      _token=_token||dk.cookie("token");
+      _token=dk.cookie("token");
       if(_token){
         req.setRequestHeader("token", _token);
       }
