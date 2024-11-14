@@ -64,7 +64,7 @@
       eval(`params=${params};`);
     }
     if(typeof params=="object" && typeof params.deleted=="undefined"){
-      params.deleted=self.cookie("deleted")||0;
+      params.deleted=dk.cookie("deleted")||0;
     }
     typeof params!="string"&&(params=JSON.stringify(params));
     const req = new XMLHttpRequest();
