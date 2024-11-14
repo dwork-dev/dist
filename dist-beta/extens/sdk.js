@@ -1,4 +1,5 @@
 ((dk)=>{
+  var _url="https://dw.beta.fwkui.com";
   var _token;
   var _user;
   dk.Unit=Unit;
@@ -99,7 +100,7 @@
   }
   dk.login=(username,password,cb)=>{
     return new Promise(rsl=>{
-      dk.post("https://dw.beta.fwkui.com/os/login",{data:{username,password}},rs=>{
+      dk.post(_url+"/os/login",{data:{username,password}},rs=>{
         typeof cb=="function"&&cb(rs);
         rsl(rs);
       })
@@ -107,7 +108,7 @@
   }
   dk.out=(cb)=>{
     return new Promise(rsl=>{
-      dk.post("https://dw.beta.fwkui.com/os/os/out",{},rs=>{
+      dk.post(_url+"/os/os/out",{},rs=>{
         rsl(rs);
         typeof cb=="function"&&cb(rs);
       })
@@ -116,61 +117,61 @@
   function Unit(){
     var self=this;
     this.gets=(filter,callback)=>{
-      return dk.post("/company/get",{filter},callback);
+      return dk.post(_url+"/company/get",{filter},callback);
     }
     this.add=(data,callback)=>{
-      return dk.post("/company/add",{data},callback);
+      return dk.post(_url+"/company/add",{data},callback);
     }
     this.edit=(data,callback)=>{
-      return dk.post("/company/edit",{data},callback);
+      return dk.post(_url+"/company/edit",{data},callback);
     }
   }
   function App(company){
     var self=this;
     //self.company=company;
     self.gets=(filter,callback)=>{
-      return dk.post("/app/get",{company,filter},callback);
+      return dk.post(_url+"/app/get",{company,filter},callback);
     }
     self.add=(data,callback)=>{
-      return dk.post("/app/add",{company,data},callback);
+      return dk.post(_url+"/app/add",{company,data},callback);
     }
     self.edit=(data,callback)=>{
-      return dk.post("/app/edit",{company,data},callback);
+      return dk.post(_url+"/app/edit",{company,data},callback);
     }
     self.addDomain=(app,domain,callback)=>{
-      return dk.post("/domain/add",{app,domain},callback);
+      return dk.post(_url+"/domain/add",{app,domain},callback);
     }
     self.edlDomain=(app,domain,callback)=>{
-      return dk.post("/domain/add",{app,domain},callback);
+      return dk.post(_url+"/domain/add",{app,domain},callback);
     }
   }
   function Resource(app){
     var self=this;
     //self.company=company;
     self.gets=(filter,callback)=>{
-      return dk.post("/app/get",{app,filter},callback);
+      return dk.post(_url+"/app/get",{app,filter},callback);
     }
     self.add=(data,callback)=>{
-      return dk.post("/app/add",{app,data},callback);
+      return dk.post(_url+"/app/add",{app,data},callback);
     }
     self.edit=(data,callback)=>{
-      return dk.post("/app/edit",{app,data},callback);
+      return dk.post(_url+"/app/edit",{app,data},callback);
     }
   }
   function Doc(resource){
     var self=this;
     //self.company=company;
     this.gets=(filter,callback)=>{
-      return dk.post("/app/get",{resource,filter},callback);
+      return dk.post(_url+"/app/get",{resource,filter},callback);
     }
     this.add=(data,callback)=>{
-      return dk.post("/app/add",{resource,data},callback);
+      return dk.post(_url+"/app/add",{resource,data},callback);
     }
     this.edit=(data,callback)=>{
-      return dk.post("/app/edit",{resource,data},callback);
+      return dk.post(_url+"/app/edit",{resource,data},callback);
     }
     self.del=(zid,callback)=>{
-      return dk.post("/app/edit",{resource,zid},callback);
+      return dk.post(_url+"/app/edit",{resource,zid},callback);
     }
   }
 })(window.dk=window.dk||{});
