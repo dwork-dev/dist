@@ -80,6 +80,7 @@
     const req = new XMLHttpRequest();
     return new Promise(resolve=>{
       req.addEventListener("load", async()=>{
+        console.log("this.response",this.response);
         var rs=JSON.parse(this.response)
         if(url.includes("os/login") && rs.data && rs.status_code==200){
           dk.token(rs.data.token);
