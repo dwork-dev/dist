@@ -20,29 +20,25 @@
       }
     }
     if(typeof value == 'undefined'){
-      var c = data[key] || [];
-      if(c.length > 1){
-        if(c[1] > 0){
-          if(c[1] < Date.now()){
-            c = [];
-            delete data[key];
-            localStorage.setItem(ckey, JSON.stringify(data));
-          }else if(typeof c[2]=="number" && c[2]>0){
-            data[key] = [c[0],Date.now()+(c[2]*1000),c[2]]
-            localStorage.setItem(ckey, JSON.stringify(data));
-          }
-        }	
+      var d=(data[key]||[]);
+      if(!d.length){
+        return;
       }
-      var rs = c[0];
-      if(typeof rs == 'object'){
-        var rs = JSON.parse(JSON.stringify(c[0]));
+      if(d[1]&&d[2]){
+        if(d[1]<Date.now()){
+          return;
+        }
       }
-      for(var i=0; i<keys.length;++i){
-        if(typeof rs == undefined) {break;}
-        if(['NaN','undefined'].includes(rs+'')) return;
-        rs = rs[keys[i]];
+      if(!keys.length){
+        return d[0];
       }
-      return rs;
+      var rs;
+      try{
+        eval(`rs=d[0].${keys.join(".")}`);
+        return rs;
+      }catch(e){
+        return rs;
+      }
     }else{
       data[key] = [value];
       if(typeof expire == 'number'){
