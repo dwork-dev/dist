@@ -1,7 +1,7 @@
 ((dk)=>{
   var _url="https://dw.beta.fwkui.com";
-  var _token;
-  var _user;
+  var _token="_token",_token_out=2*24*60*60*1000;
+  var _user,_domain=location.host.split(".").slice(-2).join(".");
   dk.Unit=Unit;
   dk.App=App;
   dk.cookie = (key, value, expire)=>{
@@ -56,8 +56,17 @@
       localStorage.setItem(ckey, JSON.stringify(data));
     }
   }
-  dk.token=()=>{
-    return _token;
+  dk.token=async(value,expire)=>{
+    value=value||(await cookieStore.get(_token));
+    if(value){
+      await cookieStore.set({
+        name: _token,
+        value,
+        expires: typeof expire=="undefined"?Date.now()+_token_out:expire,
+        domain: _domain
+      })
+    }
+    return value;
   }
   dk.post=async (url,params,callback,callbackerror,sync)=>{
     params=params||{};
@@ -65,32 +74,26 @@
       eval(`params=${params};`);
     }
     if(typeof params=="object" && typeof params.deleted=="undefined"){
-      params.deleted=dk.cookie("deleted")||0;
+      params.deleted=dk.token("deleted")||0;
     }
     typeof params!="string"&&(params=JSON.stringify(params));
     const req = new XMLHttpRequest();
     return new Promise(resolve=>{
-      req.addEventListener("load", function(){
+      req.addEventListener("load", async()=>{
         var rs=JSON.parse(this.response)
         if(url.includes("os/login") && rs.data && rs.status_code==200){
-          _token=rs.data.token;
-          _user=rs.data.user;
-          dk.cookie("user",_user);
-          dk.cookie("token",_token);
+          dk.token(rs.data.token);
         }else if(url.includes("os/out")&&!url.includes("os/out_all")){
-          dk.cookie("user"," ",0);
-          dk.cookie("token"," ",0);
-          _token="";
-          _user={};
+          dk.token("",0);
         }
         typeof callback=="function"&&callback(rs);
         resolve(rs);
       });
       req.open("POST", url,sync);
       req.setRequestHeader("Content-Type", "application/json");
-      _token=dk.cookie("token");
-      if(_token){
-        req.setRequestHeader("token", _token);
+      //var t=dk.token();
+      if(t){
+        //req.setRequestHeader(_token", t);
       }
       if(params.app){
         req.setRequestHeader("id_app", params.app);
