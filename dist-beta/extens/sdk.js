@@ -57,7 +57,9 @@
     }
   }
   dk.token=async(value,expire)=>{
-    value=value||(await cookieStore.get(_token));
+    console.log(11,value,expire,_token)
+    value=value||((await cookieStore.get(_token))||{}).value;
+    console.log(22,value,expire,_token)
     if(value){
       await cookieStore.set({
         name: _token,
@@ -79,9 +81,9 @@
     typeof params!="string"&&(params=JSON.stringify(params));
     const req = new XMLHttpRequest();
     return new Promise(resolve=>{
-      req.addEventListener("load", async()=>{
-        console.log("this.response",this.response);
-        var rs=JSON.parse(this.response)
+      req.addEventListener("load", async(event)=>{
+        var rs=JSON.parse(event.target.response)
+        console.log("this.response",rs.data.token);
         if(url.includes("os/login") && rs.data && rs.status_code==200){
           dk.token(rs.data.token);
         }else if(url.includes("os/out")&&!url.includes("os/out_all")){
