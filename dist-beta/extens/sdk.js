@@ -57,9 +57,7 @@
     }
   }
   dk.token=async(value,expire)=>{
-    console.log(11,value,expire,_token)
     value=value||((await cookieStore.get(_token))||{}).value;
-    console.log(22,value,expire,_token)
     if(value){
       await cookieStore.set({
         name: _token,
