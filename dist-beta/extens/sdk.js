@@ -91,7 +91,7 @@
       });
       req.open("POST", url,sync);
       req.setRequestHeader("Content-Type", "application/json");
-      //var t=dk.token();
+      var t=dk.token();
       if(t){
         //req.setRequestHeader(_token", t);
       }
