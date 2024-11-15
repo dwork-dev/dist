@@ -89,7 +89,7 @@
       req.setRequestHeader("Content-Type", "application/json");
       var t=await dk.token();
       if(t){
-        req.setRequestHeader(_token, t);
+        req.setRequestHeader("token", t);
       }
       if(params.app){
         req.setRequestHeader("id_app", params.app);
