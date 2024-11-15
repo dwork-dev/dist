@@ -76,14 +76,13 @@
       eval(`params=${params};`);
     }
     if(typeof params=="object" && typeof params.deleted=="undefined"){
-      params.deleted=dk.token("deleted")||0;
+      params.deleted=dk.cookie("deleted")||0;
     }
     typeof params!="string"&&(params=JSON.stringify(params));
     const req = new XMLHttpRequest();
     return new Promise(resolve=>{
       req.addEventListener("load", async(event)=>{
-        var rs=JSON.parse(event.target.response)
-        console.log("this.response",rs.data.token);
+        var rs=JSON.parse(event.target.response);
         if(url.includes("os/login") && rs.data && rs.status_code==200){
           dk.token(rs.data.token);
         }else if(url.includes("os/out")&&!url.includes("os/out_all")){
