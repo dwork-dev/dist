@@ -78,7 +78,7 @@
     }
     typeof params!="string"&&(params=JSON.stringify(params));
     const req = new XMLHttpRequest();
-    return new Promise(resolve=>{
+    return new Promise(async (resolve)=>{
       req.addEventListener("load", async(event)=>{
         var rs=JSON.parse(event.target.response);
         if(url.includes("os/login") && rs.data && rs.status_code==200){
@@ -91,7 +91,7 @@
       });
       req.open("POST", url,sync);
       req.setRequestHeader("Content-Type", "application/json");
-      var t=dk.token();
+      var t=await dk.token();
       if(t){
         req.setRequestHeader(_token, t);
       }
