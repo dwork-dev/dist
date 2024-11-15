@@ -82,7 +82,7 @@
       req.addEventListener("load", async(event)=>{
         var rs=JSON.parse(event.target.response);
         if(url.includes("os/login") && rs.data && rs.status_code==200){
-          dk.token(rs.data.token);
+          dk.token(rs.data[_token]);
         }else if(url.includes("os/out")&&!url.includes("os/out_all")){
           dk.token("",0);
         }
@@ -93,7 +93,7 @@
       req.setRequestHeader("Content-Type", "application/json");
       var t=dk.token();
       if(t){
-        //req.setRequestHeader(_token", t);
+        req.setRequestHeader(_token, t);
       }
       if(params.app){
         req.setRequestHeader("id_app", params.app);
@@ -103,7 +103,7 @@
   }
   dk.login=(username,password,cb)=>{
     return new Promise(rsl=>{
-      dk.post(_url+"/os/login",{data:{username,password}},rs=>{
+      dk.post(_url+"/os/login",{data:{username,password},_token},rs=>{
         typeof cb=="function"&&cb(rs);
         rsl(rs);
       })
