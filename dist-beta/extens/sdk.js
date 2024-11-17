@@ -115,14 +115,23 @@
   }
   function Unit(){
     var self=this;
-    this.gets=(filter,callback)=>{
+    self.gets=(filter,callback)=>{
       return dk.post(_url+"/company/get",{filter},callback);
     }
-    this.add=(data,callback)=>{
+    self.add=(data,callback)=>{
       return dk.post(_url+"/company/add",{data},callback);
     }
-    this.edit=(data,callback)=>{
+    self.edit=(data,callback)=>{
       return dk.post(_url+"/company/edit",{data},callback);
+    }
+    self.addDomain=(app,domain,callback)=>{
+      return dk.post(_url+"/domain/add",{app,domain},callback);
+    }
+    self.delDomain=(domain,callback)=>{
+      return dk.post(_url+"/domain/del",{domain},callback);
+    }
+    self.getDomain=(filter,callback)=>{
+      return dk.post(_url+"/domain/get",{filter},callback);
     }
   }
   function App(company){
@@ -160,13 +169,13 @@
   function Doc(resource){
     var self=this;
     //self.company=company;
-    this.gets=(filter,callback)=>{
+    self.gets=(filter,callback)=>{
       return dk.post(_url+"/app/get",{resource,filter},callback);
     }
-    this.add=(data,callback)=>{
+    self.add=(data,callback)=>{
       return dk.post(_url+"/app/add",{resource,data},callback);
     }
-    this.edit=(data,callback)=>{
+    self.edit=(data,callback)=>{
       return dk.post(_url+"/app/edit",{resource,data},callback);
     }
     self.del=(zid,callback)=>{
