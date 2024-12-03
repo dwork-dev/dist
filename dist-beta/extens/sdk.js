@@ -1,10 +1,29 @@
+
 ((dk)=>{
   var _url="https://dw.beta.fwkui.com";
-  var _token="_token",_token_out=2*24*60*60*1000;
+  var _token="dk_token",_token_out=2*24*60*60*1000;
   var _user,_domain=location.host.split(".").slice(-2).join(".");
   dk.Unit=Unit;
   dk.App=App;
-  dk.cookie = (key, value, expire)=>{
+  dk.Resource=Resource;
+  dk.Doc=Doc;
+  dk.get=getDataForm;
+  dk.set=setDataForm;
+  dk.post=post;
+  dk.cookie=cookie;
+  dk.token=token;
+  dk.user=new User();
+  dk.user.get(rs=>{
+    console.log(1111,rs);
+    
+    if(rs.data){
+      _user=rs.data;
+    }
+    if(window.sdk_login){
+      //sdk_login.innerHTML = ``;
+    }
+  });
+  function cookie(key, value, expire){
     var ckey = '__cookie_data__';
     var keys = key;
     if(typeof keys=="string"){
@@ -52,7 +71,7 @@
       localStorage.setItem(ckey, JSON.stringify(data));
     }
   }
-  dk.token=async(value,expire)=>{
+  async function token(value,expire){
     value=value||((await cookieStore.get(_token))||{}).value;
     if(value){
       await cookieStore.set({
@@ -64,7 +83,7 @@
     }
     return value;
   }
-  dk.post=async (url,params,callback,callbackerror,sync)=>{
+  function post (url,params,callback,callbackerror,sync){
     params=params||{};
     if(typeof params=="string"){
       eval(`params=${params};`);
@@ -88,6 +107,7 @@
       req.open("POST", url,sync);
       req.setRequestHeader("Content-Type", "application/json");
       var t=await dk.token();
+      console.log("url,t",url,t)
       if(t){
         req.setRequestHeader("token", t);
       }
@@ -97,24 +117,142 @@
       req.send(params);
     })
   }
-  dk.login=(username,password,cb)=>{
-    return new Promise(rsl=>{
-      dk.post(_url+"/os/login",{data:{username,password},_token},rs=>{
-        typeof cb=="function"&&cb(rs);
-        rsl(rs);
-      })
-    })
+  function getDataForm(el){
+    if(el){
+      if(typeof el=="string"){
+        el=document.querySelector(el);
+      }
+    }
+    var p = {};
+    var __CKE = [];
+    if(Array.isArray(window.cke)) __CKE = window.cke;
+    if(window.CKEDITOR) __CKE = CKEDITOR.instances;
+    el.querySelectorAll('*[name]').forEach(a=>{
+      if(!a.name){return}
+      if(a.code && typeof a.code.getValue=="function"){
+        return p[a.name] = a.code.getValue();
+      }
+      if(a.id && __CKE[a.id]){
+        p[a.name] = __CKE[a.id].getData();
+        return;
+      }
+      if(a.type === 'checkbox'){
+        var val = a.checked?1:0;
+        if(typeof p[a.name]!="undefined" && !Array.isArray(p[a.name])){
+          p[a.name]=[p[a.name]];
+        }
+        if(Array.isArray(p[a.name])){
+          p[a.name].push(val);
+        }else{          
+          p[a.name] = val;
+        }
+      }else if(a.type === 'radio'){
+        var val = a.value||'';
+        if(!p[a.name] && el.querySelectorAll(`[name=${a.name}]`).length>1){
+          p[a.name]=[];
+        }
+        if(Array.isArray(p[a.name])){
+          p[a.name].push(val);
+        }else{
+          p[a.name]=val;
+        }
+      }else{
+        if(typeof p[a.name]!="undefined" && !Array.isArray(p[a.name])){
+          p[a.name]=[p[a.name]];
+        }
+        if(Array.isArray(p[a.name])){
+          p[a.name].push(a.value || '');
+        }else{          
+          p[a.name] = a.value || '';
+        }
+      }
+    });
+    return p;
   }
-  dk.out=(cb)=>{
-    return new Promise(rsl=>{
-      dk.post(_url+"/os/os/out",{},rs=>{
-        rsl(rs);
-        typeof cb=="function"&&cb(rs);
-      })
-    })
+  function setDataForm(el, data, callback){
+    if(el){
+      if(typeof el=="string"){
+        el=document.querySelector(el);
+      }
+    }
+    data || (data={});
+    var p = {};
+    var __CKE = [];
+    if(Array.isArray(window.cke)) __CKE = window.cke;
+    if(window.CKEDITOR) __CKE = CKEDITOR.instances;
+    Object.keys(data).forEach(k=>{
+      try{
+        var els=el.querySelectorAll(`[name="${k}"]`);
+        if(els.length){
+          if(Array.isArray(data[k])){
+            data[k].forEach((v,i)=>{
+              setVal(els[i],v);
+            })
+          }else{
+            setVal(els[0],data[k]);
+          }
+        }
+      }catch(e){console.log("setDataForm err",e)}
+    });
+    function setVal(a,val){
+      if(!a){return}
+      if(a.code && typeof a.code.setValue=="function"){
+        a.code.setValue(data[a.name]);
+      }else if(a.id && __CKE[a.id]){
+        __CKE[a.id].setData(data[a.name]);
+      }else if(a.type=="checkbox"){
+        if(!a.getAttribute("value")){
+          a.setAttribute("value",1)
+        }
+        a.checked=(a.value==val?true:false);
+      }else if(a.type=="radio"){
+        a.checked=(a.value==val);
+      }else{
+        a.value=val;
+      }
+    }
+    /*
+    el.querySelectorAll('*[name]').forEach(a=>{
+      if(data[a.name] != undefined){
+        if(a.code && typeof a.code.setValue=="function"){
+          a.code.setValue(data[a.name]);
+        }else if(a.id && __CKE[a.id]){
+          __CKE[a.id].setData(data[a.name]);
+        }else if(a.type === 'checkbox'){
+          if(!a.getAttribute("value")){
+            a.setAttribute("value",1)
+          }
+          
+        }else if(a.type === 'radio'){
+          data[a.name] || (data[a.name] = []);
+          if(!Array.isArray(data[a.name])) {
+            data[a.name] = [data[a.name]];
+          }
+          if(data[a.name].map(d=>d+'').includes(a.value)) {
+            a.checked = true;
+          } else {
+            a.checked = false;
+          }
+        }else {
+          if(!Array.isArray(data[a.name])){
+            a.value = data[a.name];
+          }else{
+            if(a.id && __CKE[a.id]){
+              __CKE[a.id].setData(data[a.name]);
+            }else{
+              a.value = data[a.name];
+            }
+          }
+        }
+      }
+    });
+    */
   }
   function Unit(){
     var self=this;
+    self.get=(filter,callback)=>{
+      return dk.post(_url+"/company/get",{filter},callback);
+    }
     self.gets=(filter,callback)=>{
       return dk.post(_url+"/company/get",{filter},callback);
     }
@@ -123,6 +261,52 @@
     }
     self.edit=(data,callback)=>{
       return dk.post(_url+"/company/edit",{data},callback);
+    }
+    self.groupGet=(zid,callback)=>{
+      return dk.post(_url+"/group/get",{zid},callback);
+    }
+    self.groupGets=(filter,callback)=>{
+      return dk.post(_url+"/group/gets",{filter},callback);
+    }
+    self.groupAdd=(data,callback)=>{
+      if(data.zid){
+        return dk.post(_url+"/group/edit",{...data},callback)
+      }else{
+        return dk.post(_url+"/group/add",{...data},callback)
+      }
+    }
+    self.groupDel=(zid,callback)=>{
+      return dk.post(_url+"/group/del",{zid},callback);
+    }
+    self.groupAddUser=(zid,users,callback)=>{
+      return dk.post(_url+"/group/add-user",{zid,users},callback);
+    }
+    self.groupDelUser=(zid,users,callback)=>{
+      return dk.post(_url+"/group/del-user",{zid,users},callback);
+    }
+    self.byTax=(taxCode,callback)=>{
+      return new Promise(rls=>{
+        await fetch("https://api.vietqr.io/v2/business/"+taxCode).then(r=>r.json()).then(r=>{
+          rls(r);
+          typeof callback=="function" && callback(r);
+        })
+      })
+    }
+  }
+  function App(){
+    var self=this;
+    //self.company=company;
+    self.get=(zid,callback)=>{
+      return dk.post(_url+"/app/get",{zid},callback);
+    }
+    self.gets=(filter,callback)=>{
+      return dk.post(_url+"/app/gets",{filter},callback);
+    }
+    self.add=(data,callback)=>{
+      return dk.post(_url+"/app/add",{data},callback);
+    }
+    self.edit=(data,callback)=>{
+      return dk.post(_url+"/app/edit",{data},callback);
     }
     self.addDomain=(app,domain,callback)=>{
       return dk.post(_url+"/domain/add",{app,domain},callback);
@@ -133,43 +317,49 @@
     self.getDomain=(filter,callback)=>{
       return dk.post(_url+"/domain/get",{filter},callback);
     }
-  }
-  function App(company){
-    var self=this;
-    //self.company=company;
-    self.gets=(filter,callback)=>{
-      return dk.post(_url+"/app/get",{company,filter},callback);
+    self.roleAdd=(app,data,callback)=>{
+      if(data.zid){
+        return dk.post(_url+"/role/edit",{...data,app},callback)
+      }else{
+        return dk.post(_url+"/role/add",{...data,app},callback)
+      }
     }
-    self.add=(data,callback)=>{
-      return dk.post(_url+"/app/add",{company,data},callback);
+    self.roleDel=(app,zid,callback)=>{
+      return dk.post(_url+"/role/del",{app,zid},callback);
     }
-    self.edit=(data,callback)=>{
-      return dk.post(_url+"/app/edit",{company,data},callback);
+    self.roleAddUser=(app,zid,users_groups,callback)=>{
+      return dk.post(_url+"/role/add-user",{app,zid,users_groups},callback);
     }
-    self.addDomain=(app,domain,callback)=>{
-      return dk.post(_url+"/domain/add",{app,domain},callback);
+    self.roleDelUser=(app,zid,users_groups,callback)=>{
+      return dk.post(_url+"/role/del-user",{app,zid,users_groups},callback);
     }
-    self.edlDomain=(app,domain,callback)=>{
-      return dk.post(_url+"/domain/add",{app,domain},callback);
+    self.roleGet=(app,filter,callback)=>{
+      return dk.post(_url+"/role/get",{app,filter},callback);
     }
   }
   function Resource(app){
     var self=this;
     //self.company=company;
+    self.get=(zid,callback)=>{
+      return dk.post(_url+"/resource/get",{app,zid},callback);
+    }
     self.gets=(filter,callback)=>{
-      return dk.post(_url+"/app/get",{app,filter},callback);
+      return dk.post(_url+"/resource/gets",{app,filter},callback);
     }
     self.add=(data,callback)=>{
-      return dk.post(_url+"/app/add",{app,data},callback);
+      return dk.post(_url+"/resource/add",{app,data},callback);
     }
     self.edit=(data,callback)=>{
-      return dk.post(_url+"/app/edit",{app,data},callback);
+      return dk.post(_url+"/resource/edit",{app,data},callback);
+    }
+    self.setACL=(data,callback)=>{
+      return dk.post(_url+"/resource/edit-acl",{app,data},callback);
     }
   }
   function Doc(resource){
     var self=this;
     //self.company=company;
-    self.gets=(filter,callback)=>{
+    self.get=(filter,callback)=>{
       return dk.post(_url+"/app/get",{resource,filter},callback);
     }
     self.add=(data,callback)=>{
@@ -180,6 +370,87 @@
     }
     self.del=(zid,callback)=>{
       return dk.post(_url+"/app/edit",{resource,zid},callback);
+    }
+  }
+  function User(callback){
+    var self=this;
+    self.get=(callback)=>{
+      return dk.post(_url+"/os/user",{},callback)
+    }
+    self.login=(username,password,captcha,callback)=>{
+      return dk.post(_url+"/os/login",{data: {username,password,captcha},_token},callback)
+    }
+    self.logout=(callback)=>{
+      return dk.post(_url+"/os/out",{},callback);
+    }
+    self.loginF=(cb)=>{
+      $dlg.form({
+        title:'Đăng nhập',
+        template:`<t-login><t-login>`,
+        width: '400',
+        onshown: frm=>{
+          if(_user && _user.token){
+            frm.getBody().innerHTML=`<div class="">
+            <div class="dF">
+            <div class=""></div>
+            <div class="">${_user.fullname||_user.username}</div>
+            </div>
+            <div class="dF">
+            	<x-button t-options="name:'btn_signout',title:'Logout'"></x-button>
+            </div>
+            </div>`;
+            frm.el('[name="btn_signout"]').onclick=()=>{
+              self.logout(rs=>{
+                if(rs.status_code==200){
+                  location.reload();
+                }
+              });
+            }
+          }else{
+            frm.getBody().innerHTML=`<div class="">
+    	<div class="dG gtc{80px;auto} aic p5px">
+     	<div class="">
+     		Tài khoản
+     	</div>
+          <div class="">
+     		<input name="username" class:"w100% p{3px;5px}">
+     	</div>
+     </div>
+     <div class="dG gtc{80px;auto} aic p5px">
+     	<div class="">
+     		Mật khẩu
+     	</div>
+          <div class="">
+     		<input name="password" class:"w100% p{3px;5px}" type="password">
+     	</div>
+     </div>
+    </div>
+    <div class="df jcC p10px">
+     	<div class="">
+     		<x-button t-options="title:'Đăng nhập',class:['p{5px;10px}','bd','cr','btn_send']"></x-button>
+     		<x-button t-options="title:'Đăng nhập & tải lại',class:['p{5px;10px}','bd','cr','btn_sendr']"></x-button>
+     	</div>
+     </div>`;
+            setTimeout(()=>{
+              frm.els(".btn_send,.btn_sendr").forEach(el=>{
+                el.onclick=()=>{
+                  self.login(frm.el('[name="username"]').value,frm.el('[name="password"]').value,"",rs=>{
+                    if(rs.status_code){
+                      frm.close();
+                      _user={
+                        token: rs.data[_token],
+                        ...rs.data.user
+                      };
+                      //location.reload();
+                    }
+                    $dlg.error(rs.msg);
+                  });
+                }
+              })
+            },1000);
+          }
+        }
+      });
     }
   }
 })(window.dk=window.dk||{});
