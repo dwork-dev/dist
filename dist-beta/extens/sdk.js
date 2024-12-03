@@ -14,8 +14,6 @@
   dk.token=token;
   dk.user=new User();
   dk.user.get(rs=>{
-    console.log(1111,rs);
-    
     if(rs.data){
       _user=rs.data;
     }
