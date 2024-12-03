@@ -285,7 +285,7 @@
       return dk.post(_url+"/group/del-user",{zid,users},callback);
     }
     self.byTax=(taxCode,callback)=>{
-      return new Promise(rls=>{
+      return new Promise(async rls=>{
         await fetch("https://api.vietqr.io/v2/business/"+taxCode).then(r=>r.json()).then(r=>{
           rls(r);
           typeof callback=="function" && callback(r);
