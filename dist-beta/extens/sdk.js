@@ -13,6 +13,7 @@
       return new SDK(url,method);
     }
     $dk.Unit=Unit;
+    $dk.User=User;
     $dk.App=App;
     $dk.Resource=Resource;
     $dk.Doc=Doc;
@@ -21,6 +22,9 @@
     $dk.post=post;
     $dk.cookie=cookie;
     $dk.token=token;
+    $dk.uid=()=>{
+      return Math.random().toString(36).slice(2,8)+Date.now().toString(36);
+    }
     function cookie(key, value, expire){
       var ckey = '__cookie_data__';
       var keys = key;
