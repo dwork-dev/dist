@@ -373,6 +373,25 @@
         return $dk.post(_url+"/doc/del",{app,resource,zid},callback);
       }
     }
+    function File(app,resource){
+      var self=this;
+      //self.company=company;
+      self.get=(path, callback)=>{
+        return $dk.post(_url+"/file/get",{data:{path}},callback);
+      }
+      self.gets=(path,callback)=>{
+        return $dk.post(_url+"/file/gets",{data:{path}},callback);
+      }
+      self.save=(path,filename,content,callback)=>{
+        return $dk.post(_url+"/file/save",{data: {path,filename,content}},callback);
+      }
+      self.acl=(zid,data,callback)=>{
+        return $dk.post(_url+"/doc/acl",{app,resource,zid,data},callback);
+      }
+      self.del=(zid,callback)=>{
+        return $dk.post(_url+"/doc/del",{app,resource,zid},callback);
+      }
+    }
     function User(callback){
       var self=this;
       self.set=(user)=>{
@@ -396,8 +415,8 @@
       self.info=(callback)=>{
         return $dk.post(_url+"/user/info",{},callback);
       }
-      self.changepass=(data,callback)=>{
-        return $dk.post(_url+"/user/changepass",{data},callback);
+      self.changepass=(old_password,password,re_password,callback)=>{
+        return $dk.post(_url+"/user/changepass",{data:{old_password,password,re_password}},callback);
       }
       self.regF=(cb)=>{
         $dlg.form({
@@ -420,7 +439,7 @@
       self.loginF=(cb)=>{
         $dlg.form({
           title:'Đăng nhập',
-          template:``,
+          template:`<t-login><t-login>`,
           width: '400',
           onshown: frm=>{
             if(_user && _user.token){
@@ -438,6 +457,7 @@
                   if(rs.status_code==200){
                     location.reload();
                   }
+                  $dlg.error(rs)
                 });
               }
             }else{
@@ -469,7 +489,7 @@
                 frm.els(".btn_send,.btn_sendr").forEach(el=>{
                   el.onclick=()=>{
                     self.login(frm.el('[name="username"]').value,frm.el('[name="password"]').value,"",rs=>{
-                      if(rs.status_code){
+                      if(rs.status_code == 200){
                         frm.close();
                         _user={
                           token: rs.data[_token],
@@ -477,7 +497,7 @@
                         };
                         //location.reload();
                       }
-                      $dlg.error(rs.msg);
+                      $dlg.error(rs);
                     });
                   }
                 })
