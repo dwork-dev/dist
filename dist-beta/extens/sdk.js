@@ -17,6 +17,7 @@
     $dk.App=App;
     $dk.Resource=Resource;
     $dk.Doc=Doc;
+    $dk.ResourceFile=ResourceFile;
     $dk.get=getDataForm;
     $dk.set=setDataForm;
     $dk.post=post;
@@ -109,7 +110,7 @@
         req.open(_method, url,sync);
         req.setRequestHeader("Content-Type", "application/json");
         var t = __token || (await $dk.token());
-        console.log("url,t",url,t)
+        //console.log("url,t",url,t)
         if(t){
           req.setRequestHeader("token", t);
         }
@@ -216,11 +217,11 @@
     }
     function Unit(){
       var self=this;
-      self.get=(filter,callback)=>{
-        return $dk.post(_url+"/company/get",{filter},callback);
+      self.get=(zid,callback)=>{
+        return $dk.post(_url+"/company/get",{zid},callback);
       }
       self.gets=(filter,callback)=>{
-        return $dk.post(_url+"/company/get",{filter},callback);
+        return $dk.post(_url+"/company/gets",{filter},callback);
       }
       self.add=(data,callback)=>{
         return $dk.post(_url+"/company/add",{data},callback);
@@ -231,27 +232,27 @@
       self.acl=(zid,data,callback)=>{
         return $dk.post(_url+"/company/acl",{zid,data},callback);
       }
-      self.groupGet=(zid,callback)=>{
-        return $dk.post(_url+"/group/get",{zid},callback);
+      self.groupGet=(company,zid,callback)=>{
+        return $dk.post(_url+"/group/get",{company,zid},callback);
       }
-      self.groupGets=(filter,callback)=>{
-        return $dk.post(_url+"/group/gets",{filter},callback);
+      self.groupGets=(company,filter,callback)=>{
+        return $dk.post(_url+"/group/gets",{company,filter},callback);
       }
-      self.groupAdd=(data,callback)=>{
+      self.groupAdd=(company,data,callback)=>{
         if(data.zid){
-          return $dk.post(_url+"/group/edit",{...data},callback)
+          return $dk.post(_url+"/group/edit",{company,zid: data.zid,data},callback)
         }else{
-          return $dk.post(_url+"/group/add",{...data},callback)
+          return $dk.post(_url+"/group/add",{company,data},callback)
         }
       }
-      self.groupDel=(zid,callback)=>{
-        return $dk.post(_url+"/group/del",{zid},callback);
+      self.groupDel=(company,zid,callback)=>{
+        return $dk.post(_url+"/group/del",{company,zid},callback);
       }
-      self.groupAddUser=(zid,users,callback)=>{
-        return $dk.post(_url+"/group/add-user",{zid,users},callback);
+      self.groupAddUser=(company,zid,users,callback)=>{
+        return $dk.post(_url+"/group/add-user",{company,zid,users},callback);
       }
-      self.groupDelUser=(zid,users,callback)=>{
-        return $dk.post(_url+"/group/del-user",{zid,users},callback);
+      self.groupDelUser=(company,zid,users,callback)=>{
+        return $dk.post(_url+"/group/del-user",{company,zid,users},callback);
       }
       self.byTax=(taxCode,callback)=>{
         return new Promise(async rls=>{
@@ -262,51 +263,54 @@
         })
       }
     }
-    function App(){
+    function App(company){
       var self=this;
       //self.company=company;
       self.get=(zid,callback)=>{
-        return $dk.post(_url+"/app/get",{zid},callback);
+        return $dk.post(_url+"/app/get",{company,zid},callback);
       }
       self.gets=(filter,callback)=>{
-        return $dk.post(_url+"/app/gets",{filter},callback);
+        return $dk.post(_url+"/app/gets",{company,filter},callback);
       }
       self.add=(data,callback)=>{
-        return $dk.post(_url+"/app/add",{data},callback);
+        return $dk.post(_url+"/app/add",{company,data},callback);
       }
       self.edit=(data,callback)=>{
-        return $dk.post(_url+"/app/edit",{data},callback);
+        return $dk.post(_url+"/app/edit",{company,data},callback);
       }
-      self.acl=(zid,data,callback)=>{
-        return $dk.post(_url+"/app/acl",{zid, data},callback);
+      self.setACL=(zid,data,callback)=>{
+        return $dk.post(_url+"/app/acl",{company,zid, data},callback);
       }
       self.addDomain=(app,domain,callback)=>{
-        return $dk.post(_url+"/domain/add",{app,domain},callback);
+        return $dk.post(_url+"/domain/add",{company,app,domain},callback);
       }
       self.delDomain=(domain,callback)=>{
-        return $dk.post(_url+"/domain/del",{domain},callback);
+        return $dk.post(_url+"/domain/del",{company,domain},callback);
       }
       self.getDomain=(filter,callback)=>{
-        return $dk.post(_url+"/domain/get",{filter},callback);
+        return $dk.post(_url+"/domain/get",{company,filter},callback);
       }
       self.roleAdd=(app,data,callback)=>{
         if(data.zid){
-          return $dk.post(_url+"/role/edit",{...data,app},callback)
+          return $dk.post(_url+"/role/edit",{company,data,app},callback)
         }else{
-          return $dk.post(_url+"/role/add",{...data,app},callback)
+          return $dk.post(_url+"/role/add",{company,data,app},callback)
         }
       }
       self.roleDel=(app,zid,callback)=>{
-        return $dk.post(_url+"/role/del",{app,zid},callback);
+        return $dk.post(_url+"/role/del",{company,app,zid},callback);
       }
       self.roleAddUser=(app,zid,users_groups,callback)=>{
-        return $dk.post(_url+"/role/add-user",{app,zid,users_groups},callback);
+        return $dk.post(_url+"/role/add-user",{company,app,zid,users_groups},callback);
       }
       self.roleDelUser=(app,zid,users_groups,callback)=>{
-        return $dk.post(_url+"/role/del-user",{app,zid,users_groups},callback);
+        return $dk.post(_url+"/role/del-user",{company,app,zid,users_groups},callback);
       }
-      self.roleGet=(app,filter,callback)=>{
-        return $dk.post(_url+"/role/get",{app,filter},callback);
+      self.roleGet=(app,zid,callback)=>{
+        return $dk.post(_url+"/role/get",{company,app,zid},callback);
+      }
+      self.roleGets=(app,filter,callback)=>{
+        return $dk.post(_url+"/role/gets",{company,app,filter},callback);
       }
     }
     function Resource(app){
@@ -324,30 +328,49 @@
       self.edit=(data,callback)=>{
         return $dk.post(_url+"/resource/edit",{app,data},callback);
       }
-      self.acl=(zid,data,callback)=>{
+      self.setACL=(zid,data,callback)=>{
         return $dk.post(_url+"/resource/acl",{zid,app,data},callback);
       }
     }
-    function Doc(resource){
+    function ResourceFile(app){
+      var self=this;
+      //self.company=company;
+      self.get=(zid,callback)=>{
+        return $dk.post(_url+"/resource-file/get",{app,zid},callback);
+      }
+      self.gets=(filter,callback)=>{
+        return $dk.post(_url+"/resource-file/gets",{app,filter},callback);
+      }
+      self.add=(data,callback)=>{
+        return $dk.post(_url+"/resource-file/add",{app,data},callback);
+      }
+      self.edit=(data,callback)=>{
+        return $dk.post(_url+"/resource-file/edit",{app,data},callback);
+      }
+      self.setACL=(zid,data,callback)=>{
+        return $dk.post(_url+"/resource-file/acl",{zid,app,data},callback);
+      }
+    }
+    function Doc(app,resource){
       var self=this;
       //self.company=company;
       self.get=(zid, callback)=>{
-        return $dk.post(_url+"/doc/get",{resource,zid},callback);
+        return $dk.post(_url+"/doc/get",{app,resource,zid},callback);
       }
       self.gets=(filter,callback)=>{
-        return $dk.post(_url+"/doc/gets",{resource,filter},callback);
+        return $dk.post(_url+"/doc/gets",{app,resource,filter},callback);
       }
       self.add=(data,callback)=>{
-        return $dk.post(_url+"/doc/add",{resource,data},callback);
+        return $dk.post(_url+"/doc/add",{app,resource,data},callback);
       }
       self.edit=(zid,data,callback)=>{
-        return $dk.post(_url+"/doc/edit",{resource,zid,data},callback);
+        return $dk.post(_url+"/doc/edit",{app,resource,zid,data},callback);
       }
       self.acl=(zid,data,callback)=>{
-        return $dk.post(_url+"/doc/acl",{resource,zid,data},callback);
+        return $dk.post(_url+"/doc/acl",{app,resource,zid,data},callback);
       }
       self.del=(zid,callback)=>{
-        return $dk.post(_url+"/doc/del",{resource,zid},callback);
+        return $dk.post(_url+"/doc/del",{app,resource,zid},callback);
       }
     }
     function User(callback){
@@ -364,10 +387,40 @@
       self.logout=(callback)=>{
         return $dk.post(_url+"/os/out",{},callback);
       }
+      self.reg=(data,callback)=>{
+        return $dk.post(_url+"/os/reg",{data},callback);
+      }
+      self.update=(data,callback)=>{
+        return $dk.post(_url+"/user/update",{data},callback);
+      }
+      self.info=(callback)=>{
+        return $dk.post(_url+"/user/info",{},callback);
+      }
+      self.changepass=(data,callback)=>{
+        return $dk.post(_url+"/user/changepass",{data},callback);
+      }
+      self.regF=(cb)=>{
+        $dlg.form({
+          title:'Đăng nhập',
+          url: `/control/reg.html`,
+          width: '400',
+          onshown: frm=>{
+            frm.querySelector('.registor').onclick=()=>{
+			self.reg(frm.get(),rs=>{
+                 if(rs.status_code==200){
+                   $dlg.message();
+                   frm.close();
+                 }
+                 $dlg.error(rs)
+               });
+            }
+          }
+        });
+      }
       self.loginF=(cb)=>{
         $dlg.form({
           title:'Đăng nhập',
-          template:`<t-login><t-login>`,
+          template:``,
           width: '400',
           onshown: frm=>{
             if(_user && _user.token){
