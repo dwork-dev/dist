@@ -1,4 +1,5 @@
 {"linkScripts":[
+  "drag.js",
   "icons.js",
   "el.js",
   "sdk.js"
