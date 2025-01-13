@@ -98,7 +98,7 @@
       typeof params!="string"&&(params=JSON.stringify(params));
       const req = new XMLHttpRequest();
       return new Promise(async (resolve)=>{
-        setTimeout(()=>{
+        setTimeout(async()=>{
           req.addEventListener("load", async(event)=>{
             var rs=JSON.parse(event.target.response);
             if(url.includes("os/login") && rs.data && rs.status_code==200){
