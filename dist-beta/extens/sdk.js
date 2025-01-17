@@ -9,9 +9,7 @@
     var _url=url||"https://dw.beta.fwkui.com";
     var _token="dk_token",_token_out=2*24*60*60*1000;
     var __token=$token;
-    $dk.init=(url,method)=>{
-      return new SDK(url,method);
-    }
+    $dk.init=init;
     $dk.Unit=Unit;
     $dk.User=User;
     $dk.App=App;
@@ -26,6 +24,9 @@
     $dk.File=File;
     $dk.uid=()=>{
       return Math.random().toString(36).slice(2,8)+Date.now().toString(36);
+    }
+    function init(url,method){
+      return new SDK(url,method);
     }
     function cookie(key, value, expire){
       var ckey = '__cookie_data__';
@@ -93,7 +94,7 @@
         eval(`params=${params};`);
       }
       if(typeof params=="object" && typeof params.deleted=="undefined"){
-        params.deleted=dk.cookie("deleted")||0;
+        params.deleted=$dk.cookie("deleted")||0;
       }
       typeof params!="string"&&(params=JSON.stringify(params));
       const req = new XMLHttpRequest();
