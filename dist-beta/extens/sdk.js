@@ -93,12 +93,12 @@
         eval(`params=${params};`);
       }
       if(typeof params=="object" && typeof params.deleted=="undefined"){
-        params.deleted=$dk.cookie("deleted")||0;
+        params.deleted=dk.cookie("deleted")||0;
       }
       typeof params!="string"&&(params=JSON.stringify(params));
       const req = new XMLHttpRequest();
       return new Promise(async (resolve)=>{
-        setTimeout(async()=>{
+        setTimeout(()=>{
           req.addEventListener("load", async(event)=>{
             var rs=JSON.parse(event.target.response);
             if(url.includes("os/login") && rs.data && rs.status_code==200){
@@ -483,17 +483,17 @@
       self.get=(data, callback)=>{
         return $dk.post(_url+"/doc/get",{resource,...data},callback);
       }
-      /**** data = {filter: {filterRules: []}, limit: 20, page: 1} ****/
-      self.gets=(data,callback)=>{
-        return $dk.post(_url+"/doc/gets",{resource,...data}, callback);
+      /**** params = {filter: {filterRules: []}, limit: 20, page: 1} ****/
+      self.gets=(params,callback)=>{
+        return $dk.post(_url+"/doc/gets",{resource,...params}, callback);
       }
-      /*** data = {<fields of resource>} ***/
-      self.add=(data,callback)=>{
-        return $dk.post(_url+"/doc/add",{resource,...data}, callback);
+      /*** params = {data: {<fields of resource>}} ***/
+      self.add=(params,callback)=>{
+        return $dk.post(_url+"/doc/add",{resource,...params}, callback);
       }
-      /*** data = {zid, data:{<fields of resource>}} ***/
-      self.edit=(data,callback)=>{
-        return $dk.post(_url+"/doc/edit",{resource,...data}, callback);
+      /*** params = {zid, data:{<fields of resource>}} ***/
+      self.edit=(params,callback)=>{
+        return $dk.post(_url+"/doc/edit",{resource,...params}, callback);
       }
       /*** 
       data = {
