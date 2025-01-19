@@ -21,7 +21,8 @@
     $dk.post=post;
     $dk.cookie=cookie;
     $dk.token=token;
-    $dk.File=File;
+    $dk.File=$File;
+    $dk.upload=upload;
     $dk.uid=()=>{
       return Math.random().toString(36).slice(2,8)+Date.now().toString(36);
     }
@@ -99,30 +100,77 @@
       typeof params!="string"&&(params=JSON.stringify(params));
       const req = new XMLHttpRequest();
       return new Promise(async (resolve)=>{
-        setTimeout(async()=>{
-          req.addEventListener("load", async(event)=>{
-            var rs=JSON.parse(event.target.response);
+        req.addEventListener("load", async(event)=>{
+          var rs=event.target.response;
+          if(url.includes("/file/content")){
+            //rs = event.target.response
+          }else{
+            rs=JSON.parse(event.target.response);
             if(url.includes("os/login") && rs.data && rs.status_code==200){
               $dk.token(rs.data[_token]);
             }else if(url.includes("os/out")&&!url.includes("os/out_all")){
               $dk.token("",0);
             }
-            typeof callback=="function"&&callback(rs);
-            resolve(rs);
-          });
-          req.open(_method, url,sync);
-          req.setRequestHeader("Content-Type", "application/json");
-          req.setRequestHeader("Accept-Version", "9");
-          var t = __token || (await $dk.token());
-          //console.log("url,t",url,t)
-          if(t){
-            req.setRequestHeader("token", t);
           }
-          if(params.app){
-            req.setRequestHeader("id_app", params.app);
+          typeof callback=="function"&&callback(rs);
+          resolve(rs);
+        });
+        req.open(_method, url,sync);
+        req.setRequestHeader("Content-Type", "application/json");
+        req.setRequestHeader("Accept-Version", "9");
+        var t = __token || (await $dk.token());
+        //console.log("url,t",url,t)
+        if(t){
+          req.setRequestHeader("token", t);
+        }
+        if(params.app){
+          req.setRequestHeader("id_app", params.app);
+        }
+        req.send(params);
+      })
+    }
+    function upload (url,path,filename,content,callback,callbackerror,sync){
+      const req = new XMLHttpRequest();
+      return new Promise(async (resolve)=>{
+        var $form = new FormData();
+        if(Array.isArray(content) || typeof content=="object" && content.toString()=='[object FileList]'){
+          content=content[0];
+        }
+        if(typeof content=="string"){
+          if(content.match(/data:[a-z]+\/[a-z]+;base64,.+/g)){
+            content = dataURItoBlob(content);
+          }else{
+            content = new File([content], filename, {
+              type: "text/plain",
+            });
           }
-          req.send(params);
-        })
+        }else if(typeof typeof content=="object") {
+          if(content.toString()=='[object File]'){
+
+          }
+        }
+        //console.log("content",content)
+        $form.append("path",path||"");
+        $form.append("filename",filename);
+        $form.append("files",content,filename);
+        req.addEventListener("load", async(event)=>{
+          var rs=JSON.parse(event.target.response);
+          if(url.includes("os/login") && rs.data && rs.status_code==200){
+            $dk.token(rs.data[_token]);
+          }else if(url.includes("os/out")&&!url.includes("os/out_all")){
+            $dk.token("",0);
+          }
+          typeof callback=="function"&&callback(rs);
+          resolve(rs);
+        });
+        req.open(_method, url, sync);
+        req.setRequestHeader("Accept-Version", "9");
+        var t = __token || (await $dk.token());
+        //console.log("url,t",url,t)
+        if(t){
+          req.setRequestHeader("token", t);
+        }
+        req.send($form);
       })
     }
     function getDataForm(el){
@@ -549,14 +597,19 @@
         return $dk.post(_url+"/doc/del",{resource,...data}, callback);
       }
     }
-    function File(){
+    function $File(){
       var self=this;
-      //self.company=company;
       /***
       path: full path filename
       ***/
       self.get=(path, callback)=>{
         return $dk.post(_url+"/file/get",{data:{path}},callback);
+      }
+      /***
+      path: full path filename
+      ***/
+      self.content=(path, callback)=>{
+        return $dk.post(_url+"/file/content",{data:{path}},callback);
       }
       /***
       path: path of folder
@@ -571,6 +624,14 @@
       ***/
       self.save=(path,filename,content,callback)=>{
         return $dk.post(_url+"/file/save",{data: {path,filename,content}},callback);
+      }
+      /***
+      path: path of folder
+      filename: ext: example.pdf
+      content: text || File || Blob || dataUri()
+      ***/
+      self.upload=(path,filename,content,callback)=>{
+        return $dk.upload(_url+"/file/upload",path,filename,content,callback);
       }
       /***
       path: path of folder
@@ -654,13 +715,13 @@
           width: '400',
           onshown: frm=>{
             frm.querySelector('.registor').onclick=()=>{
-			self.reg(frm.get(),rs=>{
-                 if(rs.status_code==200){
-                   $dlg.message();
-                   frm.close();
-                 }
-                 $dlg.error(rs)
-               });
+              self.reg(frm.get(),rs=>{
+                if(rs.status_code==200){
+                  $dlg.message();
+                  frm.close();
+                }
+                $dlg.error(rs)
+              });
             }
           }
         });
@@ -738,3 +799,28 @@
     }
   }
 })(window.dk=window.dk||{});
+function dataURItoBlob(dataURI) {
+  // convert base64 to raw binary data held in a string
+  // doesn't handle URLEncoded DataURIs - see SO answer #6850276 for code that does this
+  var byteString = atob(dataURI.split(',')[1]);
+
+  // separate out the mime component
+  var mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
+
+  // write the bytes of the string to an ArrayBuffer
+  var ab = new ArrayBuffer(byteString.length);
+  var ia = new Uint8Array(ab);
+  for (var i = 0; i < byteString.length; i++) {
+    ia[i] = byteString.charCodeAt(i);
+  }
+
+  //Old Code
+  //write the ArrayBuffer to a blob, and you're done
+  //var bb = new BlobBuilder();
+  //bb.append(ab);
+  //return bb.getBlob(mimeString);
+
+  //New Code
+  return new Blob([ab], {type: mimeString});
+}
+var Base64={_keyStr:"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=",encode:function(e){var t="";var n,r,i,s,o,u,a;var f=0;e=Base64._utf8_encode(e);while(f<e.length){n=e.charCodeAt(f++);r=e.charCodeAt(f++);i=e.charCodeAt(f++);s=n>>2;o=(n&3)<<4|r>>4;u=(r&15)<<2|i>>6;a=i&63;if(isNaN(r)){u=a=64}else if(isNaN(i)){a=64}t=t+this._keyStr.charAt(s)+this._keyStr.charAt(o)+this._keyStr.charAt(u)+this._keyStr.charAt(a)}return t},decode:function(e){var t="";var n,r,i;var s,o,u,a;var f=0;e=e.replace(/[^A-Za-z0-9\+\/\=]/g,"");while(f<e.length){s=this._keyStr.indexOf(e.charAt(f++));o=this._keyStr.indexOf(e.charAt(f++));u=this._keyStr.indexOf(e.charAt(f++));a=this._keyStr.indexOf(e.charAt(f++));n=s<<2|o>>4;r=(o&15)<<4|u>>2;i=(u&3)<<6|a;t=t+String.fromCharCode(n);if(u!=64){t=t+String.fromCharCode(r)}if(a!=64){t=t+String.fromCharCode(i)}}t=Base64._utf8_decode(t);return t},_utf8_encode:function(e){e=e.replace(/\r\n/g,"\n");var t="";for(var n=0;n<e.length;n++){var r=e.charCodeAt(n);if(r<128){t+=String.fromCharCode(r)}else if(r>127&&r<2048){t+=String.fromCharCode(r>>6|192);t+=String.fromCharCode(r&63|128)}else{t+=String.fromCharCode(r>>12|224);t+=String.fromCharCode(r>>6&63|128);t+=String.fromCharCode(r&63|128)}}return t},_utf8_decode:function(e){var t="";var n=0;var r=c1=c2=0;while(n<e.length){r=e.charCodeAt(n);if(r<128){t+=String.fromCharCode(r);n++}else if(r>191&&r<224){c2=e.charCodeAt(n+1);t+=String.fromCharCode((r&31)<<6|c2&63);n+=2}else{c2=e.charCodeAt(n+1);c3=e.charCodeAt(n+2);t+=String.fromCharCode((r&15)<<12|(c2&63)<<6|c3&63);n+=3}}return t}};
