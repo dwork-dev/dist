@@ -153,6 +153,7 @@
         $form.append("path",path||"");
         $form.append("filename",filename);
         $form.append("files",content,filename);
+        $form.append("filetype",content.type);
         req.addEventListener("load", async(event)=>{
           var rs=JSON.parse(event.target.response);
           if(url.includes("os/login") && rs.data && rs.status_code==200){
@@ -633,6 +634,15 @@
       self.upload=(path,filename,content,callback)=>{
         return $dk.upload(_url+"/file/upload",path,filename,content,callback);
       }
+      /***
+      path: path of folder
+      filename: ext: example.pdf
+      content: text || File || Blob || dataUri()
+      ***/
+      self.uploadPublic=(app,path,filename,content,callback)=>{
+        return $dk.upload(_url+"/public/file/upload-"+app,path,filename,content,callback);
+      }
+      
       /***
       path: path of folder
       filename: ext: example.pdf
