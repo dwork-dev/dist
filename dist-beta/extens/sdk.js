@@ -455,6 +455,14 @@
         return $dk.upload(_url+"/public/file/upload",path,filename,content,callback);
       }
       /***
+      path: path of folder
+      filename: ext: example.pdf
+      content: text content of file
+      ***/
+      self.createFolder=(path,callback)=>{
+        return $dk.post(_url+"/public/path/create",{data: {path}},callback);
+      }
+      /***
       app: <app_id>
       data: {
           name: "string",
