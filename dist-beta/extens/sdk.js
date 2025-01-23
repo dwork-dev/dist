@@ -90,6 +90,7 @@
       return value;
     }
     function post (url,params,callback,callbackerror,sync){
+      sync = sync?true:false;
       params=params||{};
       if(typeof params=="string"){
         eval(`params=${params};`);
@@ -115,7 +116,7 @@
           typeof callback=="function"&&callback(rs);
           resolve(rs);
         });
-        req.open(_method, url,sync);
+        req.open(_method, url, sync);
         req.setRequestHeader("Content-Type", "application/json");
         req.setRequestHeader("Accept-Version", "9");
         var t = __token || (await $dk.token());
@@ -639,10 +640,9 @@
       filename: ext: example.pdf
       content: text || File || Blob || dataUri()
       ***/
-      self.uploadPublic=(app,path,filename,content,callback)=>{
-        return $dk.upload(_url+"/public/file/upload-"+app,path,filename,content,callback);
+      self.uploadPublic=(path,filename,content,callback)=>{
+        return $dk.upload(_url+"/public/file/upload",path,filename,content,callback);
       }
-      
       /***
       path: path of folder
       filename: ext: example.pdf
