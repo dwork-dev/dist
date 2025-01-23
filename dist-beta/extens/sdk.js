@@ -141,7 +141,7 @@
             content = dataURItoBlob(content);
           }else{
             content = new File([content], filename, {
-              type: "text/plain",
+              type: content.match(/<[a-z]+>.*<\/[a-z]+>/g)?"text/html":"text/plain",
             });
           }
         }else if(typeof typeof content=="object") {
@@ -447,6 +447,14 @@
         return $dk.post(_url+"/domain/get",{company,filter},callback);
       }
       /***
+      path: path of folder
+      filename: ext: example.pdf
+      content: text || File || Blob || dataUri()
+      ***/
+      self.upload=(path,filename,content,callback)=>{
+        return $dk.upload(_url+"/public/file/upload",path,filename,content,callback);
+      }
+      /***
       app: <app_id>
       data: {
           name: "string",
@@ -633,14 +641,6 @@
       ***/
       self.upload=(path,filename,content,callback)=>{
         return $dk.upload(_url+"/file/upload",path,filename,content,callback);
-      }
-      /***
-      path: path of folder
-      filename: ext: example.pdf
-      content: text || File || Blob || dataUri()
-      ***/
-      self.uploadPublic=(path,filename,content,callback)=>{
-        return $dk.upload(_url+"/public/file/upload",path,filename,content,callback);
       }
       /***
       path: path of folder
