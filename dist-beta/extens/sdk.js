@@ -90,7 +90,6 @@
       return value;
     }
     function post (url,params,callback,callbackerror,sync){
-      sync = sync?true:false;
       params=params||{};
       if(typeof params=="string"){
         eval(`params=${params};`);
