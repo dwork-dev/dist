@@ -140,8 +140,18 @@
           if(content.match(/data:[a-z]+\/[a-z]+;base64,.+/g)){
             content = dataURItoBlob(content);
           }else{
+            var type = "text/plain";
+            if(type.match(/\.js$/)){
+              type = "text/javascript";
+            }else if(type.match(/\.html$/)){
+              type = "text/html";
+            }else if(type.match(/\.svg$/)){
+              type = "image/svg+xml";
+            }else if(type.match(/\.xml$/)){
+              type = "application/xml";
+            }
             content = new File([content], filename, {
-              type: content.match(/<[a-z]+>.*<\/[a-z]+>/g)?"text/html":"text/plain",
+              type
             });
           }
         }else if(typeof typeof content=="object") {
@@ -461,6 +471,24 @@
       ***/
       self.createFolder=(path,callback)=>{
         return $dk.post(_url+"/public/path/create",{data: {path}},callback);
+      }
+      /***
+      path: path of folder
+      ***/
+      self.fileGets=(path,callback)=>{
+        return $dk.post(_url+"/public/file/gets",{data:{path}},callback);
+      }
+      /***
+      path: full path filename
+      ***/
+      self.fileGet=(path, callback)=>{
+        return $dk.post(_url+"/public/file/get",{data:{path}},callback);
+      }
+      /***
+      path: full path filename
+      ***/
+      self.fileContent=(path, callback)=>{
+        return $dk.post(_url+"/public/file/content",{data:{path}},callback);
       }
       /***
       app: <app_id>
