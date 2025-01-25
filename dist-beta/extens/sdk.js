@@ -487,6 +487,18 @@
       /***
       path: full path filename
       ***/
+      self.fileDel=(path, callback)=>{
+        return $dk.post(_url+"/public/file/del",{data:{path}},callback);
+      }
+      /***
+      path: full path filename
+      ***/
+      self.folderDel=(path, callback)=>{
+        return $dk.post(_url+"/public/folder/del",{data:{path}},callback);
+      }
+      /***
+      path: full path filename
+      ***/
       self.fileContent=(path, callback)=>{
         return $dk.post(_url+"/public/file/content",{data:{path}},callback);
       }
