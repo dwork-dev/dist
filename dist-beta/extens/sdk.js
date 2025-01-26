@@ -30,6 +30,7 @@ Element.prototype.els=function(id){
     $dk.token=token;
     $dk.File=$File;
     $dk.upload=upload;
+    $dk.download=download;
     $dk.uid=()=>{
       return Math.random().toString(36).slice(2,8)+Date.now().toString(36);
     }
