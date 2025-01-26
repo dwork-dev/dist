@@ -120,6 +120,7 @@ Element.prototype.els=function(id){
           req.setRequestHeader("id_app", params.app);
         }
         req.onload=(event)=>{
+          console.log(event)
           var rs=event.target.response;
           if(url.includes("/file/content")){
             //rs = event.target.response
@@ -139,17 +140,13 @@ Element.prototype.els=function(id){
     }
     async function _download (url, stringFunction, callback, callbackerror, sync){
       var t = __token || (await $dk.token());
-      if(!url.includes("://")){
-        url = location.origin+url;
-      }
-      console.log("url",url);
       return fetch(url,{
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           "Accept-Version": "9",
           "token": t
-        }
+        },body: "{}"
       }).then(r=>{
         typeof callback=="function" && callback(r);
         if(stringFunction && typeof r[stringFunction]=="function"){
@@ -700,7 +697,9 @@ Element.prototype.els=function(id){
       /***
       path: full path filename
       ***/
-      self.download=$dk.download;
+      self.download=(url, typeFnc, callback)=>{
+        return $dk.download(url, typeFnc||"", callback);
+      }
       /***
       path: path of folder
       ***/
