@@ -78,8 +78,8 @@
       }
     }
     async function token(value,expire){
-      value=value||((await cookieStore.get(_token))||{}).value;
-      if(value){
+      var v = ((await cookieStore.get(_token))||{}).value;
+      if(value && value!=v){
         await cookieStore.set({
           name: _token,
           value,
@@ -87,7 +87,7 @@
           domain: _domain
         })
       }
-      return value;
+      return value||v;
     }
     function post (url,params,callback,callbackerror,sync){
       params=params||{};
