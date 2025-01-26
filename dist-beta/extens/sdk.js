@@ -16,7 +16,6 @@ Element.prototype.els=function(id){
     var _url=url||"https://"+sortdomain;
     var _token="dk_token",_token_out=2*24*60*60*1000;
     var __token=$token;
-    const req = new XMLHttpRequest();
     $dk.init=init;
     $dk.Unit=Unit;
     $dk.User=User;
@@ -107,6 +106,7 @@ Element.prototype.els=function(id){
       }
       typeof params!="string"&&(params=JSON.stringify(params));
       return new Promise(async (resolve)=>{
+        var req = new XMLHttpRequest();
         req.open(_method, url, sync);
         req.setRequestHeader("Content-Type", "application/json");
         req.setRequestHeader("Accept-Version", "9");
@@ -119,8 +119,9 @@ Element.prototype.els=function(id){
           req.setRequestHeader("id_app", params.app);
         }
         req.onload=(event)=>{
+          console.log(event)
           var rs=event.target.response;
-          if(url.includes("/file/content")){
+          if(url.includes("/file/content") || url.includes("/file/download")){
             //rs = event.target.response
           }else{
             rs=JSON.parse(event.target.response);
@@ -134,6 +135,20 @@ Element.prototype.els=function(id){
           resolve(rs);
         }
         req.send(params);
+      })
+    }
+    function download (url, zid, callback, callbackerror, sync){
+      var t = __token || (await $dk.token());
+      return fetch(url,{
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Accept-Version": "9",
+          "token": t
+        },
+        body: JSON.stringify({
+          zid
+        })
       })
     }
     function upload (url,path,filename,content,callback,callbackerror,sync){
@@ -674,6 +689,12 @@ Element.prototype.els=function(id){
       ***/
       self.content=(path, callback)=>{
         return $dk.post(_url+"/file/content",{data:{path}},callback);
+      }
+      /***
+      path: full path filename
+      ***/
+      self.download=(path, callback)=>{
+        return $dk.download(_url+"/file/content",{ data: {path}, type:"binary"}, callback);
       }
       /***
       path: path of folder
