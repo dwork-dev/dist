@@ -30,7 +30,7 @@ Element.prototype.els=function(id){
     $dk.token=token;
     $dk.File=$File;
     $dk.upload=upload;
-    $dk.download=download;
+    $dk.download=_download;
     $dk.uid=()=>{
       return Math.random().toString(36).slice(2,8)+Date.now().toString(36);
     }
@@ -138,8 +138,8 @@ Element.prototype.els=function(id){
         req.send(params);
       })
     }
-    function download (url, zid, callback, callbackerror, sync){
-      var t = __token || (await $dk.token());
+    function _download (url, zid, callback, callbackerror, sync){
+      var t = __token || (await dk.token());
       return fetch(url,{
         method: "POST",
         headers: {
@@ -694,8 +694,8 @@ Element.prototype.els=function(id){
       /***
       path: full path filename
       ***/
-      self.download=(path, callback)=>{
-        return $dk.download(_url+"/file/content",{ data: {path}, type:"binary"}, callback);
+      self.download=(zid, callback)=>{
+        return $dk.download(_url+"/file/content", zid, callback);
       }
       /***
       path: path of folder
