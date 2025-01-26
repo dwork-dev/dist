@@ -16,6 +16,7 @@ Element.prototype.els=function(id){
     var _url=url||"https://"+sortdomain;
     var _token="dk_token",_token_out=2*24*60*60*1000;
     var __token=$token;
+    const req = new XMLHttpRequest();
     $dk.init=init;
     $dk.Unit=Unit;
     $dk.User=User;
@@ -105,9 +106,19 @@ Element.prototype.els=function(id){
         params.deleted=$dk.cookie("deleted")||0;
       }
       typeof params!="string"&&(params=JSON.stringify(params));
-      const req = new XMLHttpRequest();
       return new Promise(async (resolve)=>{
-        req.addEventListener("load", async(event)=>{
+        req.open(_method, url, sync);
+        req.setRequestHeader("Content-Type", "application/json");
+        req.setRequestHeader("Accept-Version", "9");
+        var t = __token || (await $dk.token());
+        //console.log("url,t",url,t)
+        if(t){
+          req.setRequestHeader("token", t);
+        }
+        if(params.app){
+          req.setRequestHeader("id_app", params.app);
+        }
+        req.onload=(event)=>{
           var rs=event.target.response;
           if(url.includes("/file/content")){
             //rs = event.target.response
@@ -119,19 +130,8 @@ Element.prototype.els=function(id){
               $dk.token("",0);
             }
           }
-          typeof callback=="function"&&callback(rs);
+          typeof callback=="function" && callback(rs);
           resolve(rs);
-        });
-        req.open(_method, url, sync);
-        req.setRequestHeader("Content-Type", "application/json");
-        req.setRequestHeader("Accept-Version", "9");
-        var t = __token || (await $dk.token());
-        //console.log("url,t",url,t)
-        if(t){
-          req.setRequestHeader("token", t);
-        }
-        if(params.app){
-          req.setRequestHeader("id_app", params.app);
         }
         req.send(params);
       })
@@ -790,73 +790,32 @@ Element.prototype.els=function(id){
           }
         });
       }
-      self.loginF=(cb)=>{
-        if(_user && _user.token){
+      self.loginF=async(cb)=>{
+        var user=_user||(await self.info()).data||{};
+        _user=user;
+        if(user && user.username!="anonymous"){
           $dlg.form({
             title:'Đăng nhập',
-            url: `/rcpanel/user/login.html`,
-            width: '400',
+            template: `
+            <div class="">
+              <div class="dF">
+                <div class=""></div>
+                <div class="">${_user.fullname||_user.username}</div>
+              </div>
+              <div class="dF">
+                 <x-button t-options="name:'btn_signout',title:'Logout'"></x-button>
+              </div>
+            </div>
+            `,
+            width: 400,
             onshown: frm=>{
-              if(_user && _user.token){
-                frm.getBody().innerHTML=`<div class="">
-            <div class="dF">
-            <div class=""></div>
-            <div class="">${_user.fullname||_user.username}</div>
-            </div>
-            <div class="dF">
-            	<x-button t-options="name:'btn_signout',title:'Logout'"></x-button>
-            </div>
-            </div>`;
-                frm.el('[name="btn_signout"]').onclick=()=>{
-                  self.logout(rs=>{
-                    if(rs.status_code==200){
-                      location.reload();
-                    }
-                    $dlg.error(rs)
-                  });
-                }
-              }else{
-                frm.getBody().innerHTML=`<div class="">
-    	<div class="dG gtc{80px;auto} aic p5px">
-     	<div class="">
-     		Tài khoản
-     	</div>
-          <div class="">
-     		<input name="username" class:"w100% p{3px;5px}">
-     	</div>
-     </div>
-     <div class="dG gtc{80px;auto} aic p5px">
-     	<div class="">
-     		Mật khẩu
-     	</div>
-          <div class="">
-     		<input name="password" class:"w100% p{3px;5px}" type="password">
-     	</div>
-     </div>
-    </div>
-    <div class="df jcC p10px">
-     	<div class="">
-     		<x-button t-options="title:'Đăng nhập',class:['p{5px;10px}','bd','cr','btn_send']"></x-button>
-     		<x-button t-options="title:'Đăng nhập & tải lại',class:['p{5px;10px}','bd','cr','btn_sendr']"></x-button>
-     	</div>
-     </div>`;
-                setTimeout(()=>{
-                  frm.els(".btn_send,.btn_sendr").forEach(el=>{
-                    el.onclick=()=>{
-                      self.login(frm.el('[name="username"]').value,frm.el('[name="password"]').value,"",rs=>{
-                        if(rs.status_code == 200){
-                          frm.close();
-                          _user={
-                            token: rs.data[_token],
-                            ...rs.data.user
-                          };
-                          //location.reload();
-                        }
-                        $dlg.error(rs);
-                      });
-                    }
-                  })
-                },1000);
+              frm.el('[name="btn_signout"]').onclick=()=>{
+                self.logout(rs=>{
+                  if(rs.status_code==200){
+                    location.reload();
+                  }
+                  $dlg.error(rs)
+                });
               }
             }
           });
