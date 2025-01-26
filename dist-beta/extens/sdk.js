@@ -120,9 +120,8 @@ Element.prototype.els=function(id){
           req.setRequestHeader("id_app", params.app);
         }
         req.onload=(event)=>{
-          console.log(event)
           var rs=event.target.response;
-          if(url.includes("/file/content") || url.includes("/file/download")){
+          if(url.includes("/file/content")){
             //rs = event.target.response
           }else{
             rs=JSON.parse(event.target.response);
@@ -138,20 +137,26 @@ Element.prototype.els=function(id){
         req.send(params);
       })
     }
-    function _download (url, zid, callback, callbackerror, sync){
-      /*
-      var t = __token || (await dk.token());
+    async function _download (url, stringFunction, callback, callbackerror, sync){
+      var t = __token || (await $dk.token());
+      if(!url.includes("://")){
+        url = location.origin+url;
+      }
+      console.log("url",url);
       return fetch(url,{
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           "Accept-Version": "9",
           "token": t
-        },
-        body: JSON.stringify({
-          zid
-        })
-      })*/
+        }
+      }).then(r=>{
+        typeof callback=="function" && callback(r);
+        if(stringFunction && typeof r[stringFunction]=="function"){
+          return r[stringFunction]();
+        }
+        return r;
+      });
     }
     function upload (url,path,filename,content,callback,callbackerror,sync){
       const req = new XMLHttpRequest();
@@ -695,9 +700,7 @@ Element.prototype.els=function(id){
       /***
       path: full path filename
       ***/
-      self.download=(zid, callback)=>{
-        return $dk.download(_url+"/file/content", zid, callback);
-      }
+      self.download=$dk.download;
       /***
       path: path of folder
       ***/
