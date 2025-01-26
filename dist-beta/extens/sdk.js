@@ -139,6 +139,7 @@ Element.prototype.els=function(id){
       })
     }
     function _download (url, zid, callback, callbackerror, sync){
+      /*
       var t = __token || (await dk.token());
       return fetch(url,{
         method: "POST",
@@ -150,7 +151,7 @@ Element.prototype.els=function(id){
         body: JSON.stringify({
           zid
         })
-      })
+      })*/
     }
     function upload (url,path,filename,content,callback,callbackerror,sync){
       const req = new XMLHttpRequest();
