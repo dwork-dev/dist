@@ -6,7 +6,8 @@
   function SDK(url,method,$token){
     var $dk=this;
     var _method=method||"POST";
-    var _url=url||"https://dw.beta.fwkui.com";
+    var sortdomain="dw.beta.fwkui.com";
+    var _url=url||"https://"+sortdomain;
     var _token="dk_token",_token_out=2*24*60*60*1000;
     var __token=$token;
     $dk.init=init;
@@ -79,7 +80,7 @@
     }
     async function token(value,expire){
       var v = ((await cookieStore.get(_token))||{}).value;
-      if(value && value!=v){
+      if(value && value!=v && !sortdomain.includes(_domain)){
         await cookieStore.set({
           name: _token,
           value,
